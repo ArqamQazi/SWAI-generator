@@ -1,14 +1,18 @@
-const CACHE_NAME = 'swai-generator-v1';
+const CACHE_NAME = 'swai-generator-v3';
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
   './script.js',
+  './store.html',
+  './store.css',
+  './store.js',
   'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js'
 ];
 
 self.addEventListener('install', event => {
-  // Perform install steps
+  // Force the waiting service worker to become the active service worker immediately
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -20,32 +24,25 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then(response => {
-        // Cache hit - return response
-        if (response) {
+        // Check if we received a valid response
+        if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
           return response;
         }
 
-        return fetch(event.request).then(
-          function(response) {
-            // Check if we received a valid response
-            // Note: cross-origin (like cdnjs) might not have status 200 depending on CORS, 
-            // but cdnjs provides CORS headers so it should be fine.
-            if(!response || response.status !== 200 || response.type !== 'basic' && response.type !== 'cors') {
-              return response;
-            }
+        // Cache the fresh response for future offline use
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then(cache => {
+            cache.put(event.request, responseToCache);
+          });
 
-            var responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(function(cache) {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          }
-        );
+        return response;
+      })
+      .catch(() => {
+        // Network failed (offline), try the cache
+        return caches.match(event.request);
       })
   );
 });
@@ -61,6 +58,9 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    }).then(() => {
+      // Take control of all clients immediately when activated
+      return self.clients.claim();
     })
   );
 });

@@ -53,6 +53,39 @@ body {
     font-weight: 600;
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-nav {
+    display: flex;
+    gap: 4px;
+}
+
+.header-nav-link {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--subtitle-color);
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.header-nav-link:hover {
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+.header-nav-link.active {
+    background: rgba(53, 132, 228, 0.12);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+
 .suggested-action {
     background-color: var(--primary-color);
     color: white;
