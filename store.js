@@ -2,12 +2,49 @@
     'use strict';
 
     // ── Configuration ──────────────────────────────────────────────────
-    const GITLAB_PROJECT = 'stillhq%2FstillOS%2FsaDB-repo';
-    const GITLAB_API     = 'https://gitlab.com/api/v4/projects/' + GITLAB_PROJECT;
-    const GITLAB_RAW     = 'https://gitlab.com/stillhq/stillOS/saDB-repo/-/raw/main';
-    const APPS_PATH      = 'swai_apps';
-    const ICONS_PATH     = 'swai_icons';
-    const REF            = 'main';
+    let searchString = window.location.search;
+    if (searchString) {
+        sessionStorage.setItem('storeConfig', searchString);
+    } else {
+        searchString = sessionStorage.getItem('storeConfig') || '';
+    }
+    const urlParams = new URLSearchParams(searchString);
+
+    let parsedProject = 'stillhq%2FstillOS%2FsaDB-repo';
+    let parsedRef = 'main';
+
+    const fullLink = urlParams.get('link');
+    if (fullLink) {
+        try {
+            const urlObj = new URL(fullLink);
+            const parts = urlObj.pathname.split('/').filter(Boolean);
+            const minusIndex = parts.indexOf('-');
+            
+            if (minusIndex !== -1) {
+                parsedProject = encodeURIComponent(parts.slice(0, minusIndex).join('/'));
+                const treeIndex = parts.indexOf('tree');
+                if (treeIndex !== -1 && treeIndex < parts.length - 1) {
+                    parsedRef = parts.slice(treeIndex + 1).join('/');
+                }
+            } else {
+                parsedProject = encodeURIComponent(parts.join('/'));
+            }
+        } catch (e) {
+            console.error("Invalid link parameter:", e);
+        }
+    } else {
+        parsedProject = urlParams.get('project') || parsedProject;
+        parsedRef = urlParams.get('ref') || urlParams.get('branch') || parsedRef;
+    }
+
+    const GITLAB_PROJECT = parsedProject;
+    const REF            = parsedRef;
+
+    const GITLAB_API     = urlParams.get('api') || ('https://gitlab.com/api/v4/projects/' + GITLAB_PROJECT);
+    const GITLAB_RAW     = urlParams.get('raw') || urlParams.get('url') || `https://gitlab.com/${decodeURIComponent(GITLAB_PROJECT)}/-/raw/${REF}`;
+
+    const APPS_PATH      = urlParams.get('apps') || 'swai_apps';
+    const ICONS_PATH     = urlParams.get('icons') || 'swai_icons';
 
     // Pricing map (from swai files – number to human label)
     const PRICING_MAP = {
