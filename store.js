@@ -104,6 +104,8 @@
     const $dialogMeta     = document.getElementById('dialogMeta');
     const $cmdSystem      = document.getElementById('cmdSystem');
     const $cmdLocal       = document.getElementById('cmdLocal');
+    const $protocolInstall = document.getElementById('protocolInstall');
+    const $protocolInstallHint = document.getElementById('protocolInstallHint');
     const $bundleAppsSection = document.getElementById('bundleAppsSection');
     const $bundleAppsList = document.getElementById('bundleAppsList');
 
@@ -135,6 +137,24 @@
         if (base === 'microsoft-365-enterprise') return rawFileUrl(`${ICONS_PATH}/com-microsoft-365-enterprise.png`);
         if (base === 'microsoft-365') return rawFileUrl(`${ICONS_PATH}/com-microsoft-365.png`);
         return rawFileUrl(`${ICONS_PATH}/${base}.png`);
+    }
+
+    /**
+     * Point the dialog's Install button at the swai:// link for a file URL.
+     * The button is hidden when the URL cannot be installed through the
+     * protocol (only https sources are accepted by swai-inst).
+     */
+    function setProtocolInstall(fileUrl) {
+        if (!$protocolInstall || !$protocolInstallHint) return;
+
+        const link = window.swaiInstallUrl(fileUrl);
+        $protocolInstall.hidden = !link;
+        $protocolInstallHint.hidden = !link;
+        if (link) {
+            $protocolInstall.href = link;
+        } else {
+            $protocolInstall.removeAttribute('href');
+        }
     }
 
     /** Pricing label */
@@ -415,6 +435,7 @@
         // Commands
         $cmdSystem.textContent = `sudo swai-inst install ${updateUrl}`;
         $cmdLocal.textContent  = `swai-inst --local install ${updateUrl}`;
+        setProtocolInstall(updateUrl);
 
         // Hide bundle section
         $bundleAppsSection.style.display = 'none';
@@ -442,6 +463,7 @@
         // Commands
         $cmdSystem.textContent = `sudo swai-inst install ${updateUrl}`;
         $cmdLocal.textContent  = `swai-inst --local install ${updateUrl}`;
+        setProtocolInstall(updateUrl);
 
         // Bundle apps list
         const apps = bundle.apps ? Object.entries(bundle.apps) : [];

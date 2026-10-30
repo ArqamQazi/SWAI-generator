@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconFileInput = document.getElementById('iconFileInput');
     const iconBrowseBtn = document.getElementById('iconBrowseBtn');
 
+    const shareUrlInput = document.getElementById('shareUrl');
+    const installLinkInput = document.getElementById('installLink');
+    const copyInstallLinkBtn = document.getElementById('copyInstallLinkBtn');
+
     if (iconBrowseBtn && iconFileInput) {
         iconBrowseBtn.addEventListener('click', () => {
             iconFileInput.click();
@@ -145,5 +149,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     });
+
+    // Build a swai:// install link for a hosted copy of the generated file
+    if (shareUrlInput && installLinkInput && copyInstallLinkBtn) {
+        const updateInstallLink = () => {
+            const link = window.swaiInstallUrl(shareUrlInput.value) || '';
+            installLinkInput.value = link;
+            copyInstallLinkBtn.disabled = !link;
+        };
+
+        shareUrlInput.addEventListener('input', updateInstallLink);
+        updateInstallLink();
+
+        copyInstallLinkBtn.addEventListener('click', async () => {
+            if (!installLinkInput.value) return;
+
+            try {
+                await navigator.clipboard.writeText(installLinkInput.value);
+            } catch (e) {
+                // Clipboard access can be unavailable (e.g. insecure context);
+                // leave the link selected so it can be copied by hand.
+                installLinkInput.select();
+                return;
+            }
+
+            copyInstallLinkBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyInstallLinkBtn.textContent = 'Copy link';
+            }, 2000);
+        });
+    }
 
 });

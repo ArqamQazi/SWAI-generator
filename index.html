@@ -180,10 +180,22 @@
                 <div class="preference-row" style="justify-content: flex-end;">
                     <button id="downloadBtn" class="suggested-action">Download .swai</button>
                 </div>
+                <div class="preference-row vertical">
+                    <div class="row-label">
+                        <label for="shareUrl">Install link</label>
+                        <span class="subtitle">Upload the .swai to an https server, paste its URL here and share the swai:// link. Opening the link starts the SWAI installer, which asks before installing.</span>
+                    </div>
+                    <div class="input-with-button">
+                        <input type="text" inputmode="url" id="shareUrl" placeholder="https://example.com/my-app.swai">
+                        <button type="button" id="copyInstallLinkBtn" class="secondary-action" disabled>Copy link</button>
+                    </div>
+                    <input type="text" id="installLink" class="install-link-output" readonly placeholder="swai://install?url=…">
+                </div>
             </div>
         </div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script src="swai-link.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

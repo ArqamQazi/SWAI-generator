@@ -238,6 +238,11 @@ input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
     background-color: var(--input-bg);
 }
 
+.secondary-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .slider {
     position: absolute;
     cursor: pointer;
@@ -298,6 +303,12 @@ input:checked + .slider:before {
     background: var(--input-bg-focus);
     border-color: var(--input-border-focus);
     outline: none;
+}
+
+.install-link-output {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--subtitle-color);
 }
 
 

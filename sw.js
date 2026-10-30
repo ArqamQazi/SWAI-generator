@@ -1,9 +1,10 @@
-const CACHE_NAME = 'swai-generator-v3';
+const CACHE_NAME = 'swai-generator-v4';
 const urlsToCache = [
   './',
   './index.html',
   './style.css',
   './script.js',
+  './swai-link.js',
   './store.html',
   './store.css',
   './store.js',

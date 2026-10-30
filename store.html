@@ -123,6 +123,13 @@
                 <!-- Install commands -->
                 <div class="dialog-section">
                     <h4>Install</h4>
+                    <a class="install-button" id="protocolInstall" href="#" hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Install with SWAI
+                    </a>
+                    <p class="install-hint" id="protocolInstallHint" hidden>
+                        Opens the SWAI installer on this computer — it shows the source and asks before installing. If nothing happens, SWAI is not set up here; use one of the commands below.
+                    </p>
                     <div class="command-block" id="commandSystem">
                         <div class="command-label">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="20" x2="18" y2="20"/></svg>
@@ -165,6 +172,7 @@
         </div>
     </footer>
 
+    <script src="swai-link.js"></script>
     <script src="store.js"></script>
 </body>
 </html>
